@@ -17,7 +17,11 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class SmartBuyTestNgClass {
 	public WebDriver driver;
 	public int numOfTry = 6;
-	public int maxOfStock=5;
+
+	// ---Note that the site doesn't have the stock balance, I tried the maximum
+	// number and assume that, and it isn't fix
+	public int maxOfStock = 5;
+
 	String url = "https://smartbuy-me.com/smartbuystore/";
 	SoftAssert softAssertProcess = new SoftAssert();
 
@@ -46,60 +50,59 @@ public class SmartBuyTestNgClass {
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10000));
 
 // --------Adding the Items as the Number of Try -------------------------------------
-		
-		//---check the number of try with max stock
+
+		// ---check the number of try with max stock
 		if (numOfTry <= maxOfStock) {
-		for (int i = 0; i < numOfTry; i++) {
-			driver.findElement(By.xpath("//*[@id=\"addToCartButton\"]")).click();
-			driver.findElement(By.xpath("//*[@id=\"addToCartLayer\"]/a[2]")).click();
-			driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10000));
-		}
+			for (int i = 0; i < numOfTry; i++) {
+				driver.findElement(By.xpath("//*[@id=\"addToCartButton\"]")).click();
+				driver.findElement(By.xpath("//*[@id=\"addToCartLayer\"]/a[2]")).click();
+				driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10000));
+			}
 
-		// --------To Assert That The count in The Cart as The same of Number of
-				// Try-------------------------------------
+			// --------To Assert That The count in The Cart as The same of Number of
+			// Try-------------------------------------
 
-				String shoppCartCount = driver
-						.findElement(By
-								.xpath("/html/body/main/header/div[4]/div/nav/div/div[3]/div/ul/li[1]/div/div/div[1]/a/div[1]"))
-						.getText();
+			String shoppCartCount = driver
+					.findElement(By.xpath(
+							"/html/body/main/header/div[4]/div/nav/div/div[3]/div/ul/li[1]/div/div/div[1]/a/div[1]"))
+					.getText();
 //			System.out.println("The Cart Shop Count String is : " + shoppCartCount);
 
-				int shoppCartCountInt = Integer.parseInt(shoppCartCount);
-		//System.out.println("The Cart Shop Count Integer is: " + shoppCartCountInt);
+			int shoppCartCountInt = Integer.parseInt(shoppCartCount);
+			// System.out.println("The Cart Shop Count Integer is: " + shoppCartCountInt);
 
-				softAssertProcess.assertEquals(numOfTry, shoppCartCountInt, "The Count Shop Cart is correct");
-		//-----test wrong values to assure invalid test
+			softAssertProcess.assertEquals(numOfTry, shoppCartCountInt, "The Count Shop Cart is correct");
+			// -----test wrong values to assure invalid test
 //				softAssertProcess.assertEquals(3, shoppCartCountInt, "The Count Shop Cart is wrong");
-				softAssertProcess.assertAll();
-		}
-else {
-		
-	System.out.println("You choose above the max items in stock");
+			softAssertProcess.assertAll();
+		} else {
 
-	for (int i = 0; i < maxOfStock; i++) {
-		driver.findElement(By.xpath("//*[@id=\"addToCartButton\"]")).click();
-		driver.findElement(By.xpath("//*[@id=\"addToCartLayer\"]/a[2]")).click();
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10000));
-	}
+			System.out.println("You choose above the max items in stock");
 
-	// --------To Assert That The count in The Cart as The max items in stock----
-	
-	String shoppCartCount = driver
-			.findElement(By
-					.xpath("/html/body/main/header/div[4]/div/nav/div/div[3]/div/ul/li[1]/div/div/div[1]/a/div[1]"))
-			.getText();
+			for (int i = 0; i < maxOfStock; i++) {
+				driver.findElement(By.xpath("//*[@id=\"addToCartButton\"]")).click();
+				driver.findElement(By.xpath("//*[@id=\"addToCartLayer\"]/a[2]")).click();
+				driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10000));
+			}
+
+			// --------To Assert That The count in The Cart as The max items in stock----
+
+			String shoppCartCount = driver
+					.findElement(By.xpath(
+							"/html/body/main/header/div[4]/div/nav/div/div[3]/div/ul/li[1]/div/div/div[1]/a/div[1]"))
+					.getText();
 //System.out.println("The Cart Shop Count String is : " + shoppCartCount);
 
-	int shoppCartCountInt = Integer.parseInt(shoppCartCount);
+			int shoppCartCountInt = Integer.parseInt(shoppCartCount);
 //System.out.println("The Cart Shop Count Integer is: " + shoppCartCountInt);
 
-	softAssertProcess.assertEquals(maxOfStock, shoppCartCountInt, "The Max Count Shop Cart is correct");
+			softAssertProcess.assertEquals(maxOfStock, shoppCartCountInt, "The Max Count Shop Cart is correct");
 //-----test wrong values to assure invalid test
 //	softAssertProcess.assertEquals(3, shoppCartCountInt, "The Max Count Shop Cart is wrong");
-	softAssertProcess.assertAll();
+			softAssertProcess.assertAll();
 
-}
-		
+		}
+
 		js.executeScript("window.scrollBy(0,-450)");
 	}
 
@@ -122,16 +125,14 @@ else {
 
 //-----------to calculate the total price-------------------------------------
 
-	Double chkTotalPrice;
-		if (numOfTry<=maxOfStock) {
-			chkTotalPrice= itemPriceDouble * numOfTry;
-		}
-		else {
-			chkTotalPrice= itemPriceDouble * maxOfStock;
+		Double chkTotalPrice;
+		if (numOfTry <= maxOfStock) {
+			chkTotalPrice = itemPriceDouble * numOfTry;
+		} else {
+			chkTotalPrice = itemPriceDouble * maxOfStock;
 		}
 //	System.out.println("The Total Price Calculated is: " + chkTotalPrice);
 
-		
 		// ----to click on shopping cart to get the total price
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(200000));
 		driver.findElement(
